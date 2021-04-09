@@ -108,21 +108,6 @@ From: ubuntu:20.04
     export MJKEY_PATH=$MUJOCO_PY_MJKEY_PATH
     export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
 
-    # Install MuJoCo
-    wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip \
-        && unzip mujoco.zip \
-        && mv mujoco200_linux $MUJOCO_PY_MUJOCO_PATH \
-        && rm mujoco.zip
-
-    if [ -d /opt/mujoco/mujoco200/mujoco200_linux ]; then echo "mujoco200_linux exists" && exit 1; fi
-
-    python3.8 -m pip --no-cache-dir install git+git://github.com/kngwyu/mujoco-py.git@use-tmp-for-lock
-    python3.8 -m pip --no-cache-dir install dm_control
-    python3.8 -m pip --no-cache-dir install git+git://github.com/denisyarats/dmc2gym.git
-
-    # Remove the MuJoCo key
-    rm $MUJOCO_PY_MJKEY_PATH
-
     # Install pybullet
     python3.8 -m pip install pybullet
 
@@ -132,6 +117,20 @@ From: ubuntu:20.04
         torchvision==0.9.1+cu111 \
         torchaudio==0.8.1 \
     -f https://download.pytorch.org/whl/torch_stable.html
+
+    # Install MuJoCo
+    # We have to install mujoco-py at last, to ensure numpy binary compatibility
+    wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip \
+        && unzip mujoco.zip \
+        && mv mujoco200_linux $MUJOCO_PY_MUJOCO_PATH \
+        && rm mujoco.zip
+
+    python3.8 -m pip --no-cache-dir install dm_control
+    python3.8 -m pip --no-cache-dir install git+git://github.com/denisyarats/dmc2gym.git
+    python3.8 -m pip --no-cache-dir install git+git://github.com/kngwyu/mujoco-py.git@use-tmp-for-lock
+
+    # Remove the MuJoCo key
+    rm $MUJOCO_PY_MJKEY_PATH
 
 %help
     This is a container for DeepRL experiments.
