@@ -116,9 +116,8 @@ From: ubuntu:20.04
 
     if [ -d /opt/mujoco/mujoco200/mujoco200_linux ]; then echo "mujoco200_linux exists" && exit 1; fi
 
-    python3.8 -m pip --no-cache-dir install mujoco-py dm_control
-    # Compile Cython files
-    python3.8 -c "import mujoco_py"
+    python3.8 -m pip --no-cache-dir install git+git://github.com/kngwyu/mujoco-py.git@use-tmp-for-lock
+    python3.8 -m pip --no-cache-dir install dm_control
     python3.8 -m pip --no-cache-dir install git+git://github.com/denisyarats/dmc2gym.git
 
     # Remove the MuJoCo key
