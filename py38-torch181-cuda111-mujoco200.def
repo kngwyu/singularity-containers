@@ -22,7 +22,12 @@ From: ubuntu:20.04
     export MJKEY_PATH=$MUJOCO_PY_MJKEY_PATH
     export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
 
+    # For launching a virtualGL server
+    export PATH=/opt/TurboVNC/bin:/opt/VirtualGL/bin:${PATH}
+
 %post
+    locale-gen en_US.UTF-8
+
     apt update && apt install -y software-properties-common
 
     add-apt-repository universe
@@ -53,6 +58,8 @@ From: ubuntu:20.04
         fish \
         cmake \
         libpng-dev \
+        libjpeg-turbo8 \
+        libjpeg-dev \
         libgl1-mesa-dev \
         libgl1-mesa-glx \
         libglfw3 \
@@ -60,11 +67,23 @@ From: ubuntu:20.04
         libglew-dev \
         libosmesa6 \
         libosmesa6-dev \
+        mesa-utils \
         xpra \
         xserver-xorg-dev \
         patchelf \
-        ffmpeg
+        ffmpeg \
+        tigervnc-standalone-server \
+        tigervnc-common \
+        novnc\
+        websockify
 
+    # Install VirtualGL and configure the server
+    export VGL_VERSION=2.6.5
+    wget https://downloads.sourceforge.net/project/virtualgl/"${VGL_VERSION}"/virtualgl_"${VGL_VERSION}"_amd64.deb
+    dpkg -i virtualgl_${VGL_VERSION}_amd64.deb
+    /opt/VirtualGL/bin/vglserver_config -config
+
+    # apt clean up
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
     # Setup Python3.8 and pip
@@ -131,6 +150,11 @@ From: ubuntu:20.04
 
     # Remove the MuJoCo key
     rm $MUJOCO_PY_MJKEY_PATH
+
+%startscript
+    vncserver :2 -geometry 1600x900 -depth 24
+    websockify -D --web=/usr/share/novnc/ 80 localhost:5902
+
 
 %help
     This is a container for DeepRL experiments.
