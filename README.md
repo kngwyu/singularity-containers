@@ -1,5 +1,10 @@
 # Singularity Containers for RL/DeepRL research
 
+## How to build
+```bash
+sudo singularity build [your container].sif [your container].def
+```
+
 ## Current Containers
 - py38-torch181-cuda111-mujoco200.sif
   - Based on Ubuntu 20.04
