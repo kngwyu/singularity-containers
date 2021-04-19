@@ -42,11 +42,11 @@ From: ubuntu:20.04
         libblas-dev \
         liblapack-dev \
         python3-tk \
+        python3-pyqt5 \
         python3-wheel \
         python3-venv \
         python3-distutils \
         python3-cffi \
-        python3-pyqt5 \
         python3.8 \
         python3.8-dev \
         pipenv \
@@ -89,11 +89,13 @@ From: ubuntu:20.04
         scikit-image \
         Pillow \
         opencv-python \
-        matplotlib==3.3.4 \
+        matplotlib \
         seaborn \
         jupyterlab \
         jupyterlab_code_formatter \
         colorama \
+        tensorboard \
+        tensorboardX \
         gym[atari]
 
     # Enable jupyter plugins
