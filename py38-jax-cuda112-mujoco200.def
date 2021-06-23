@@ -1,0 +1,163 @@
+BootStrap: library
+From: ubuntu:20.04
+
+%labels
+    Author yuji.kanagawa@oist.jp
+    Version v0.1.0
+
+%files
+    # Copy MuJoCo key
+    mjkey.txt /opt/mujoco/mjkey.txt
+
+%environment
+    export LC_ALL=C
+    export SHELL=/bin/bash
+
+    # For mujoco-py
+    export MUJOCO_PY_MUJOCO_PATH=/opt/mujoco/mujoco200
+    export LD_LIBRARY_PATH=$MUJOCO_PY_MUJOCO_PATH/bin:${LD_LIBRARY_PATH}
+    export MUJOCO_PY_MJKEY_PATH=/opt/mujoco/mjkey.txt
+
+    # For DM control suites
+    export MJKEY_PATH=$MUJOCO_PY_MJKEY_PATH
+    export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
+
+%post
+    apt update && apt install -y software-properties-common
+
+    add-apt-repository universe
+
+    apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
+        build-essential \
+        git \
+        wget \
+        vim \
+        emacs \
+        curl \
+        zip \
+        net-tools \
+        zlib1g-dev \
+        unzip \
+        pkg-config \
+        libblas-dev \
+        liblapack-dev \
+        python3-tk \
+        python3-pyqt5 \
+        python3-wheel \
+        python3-venv \
+        python3-distutils \
+        python3-cffi \
+        python3.8 \
+        python3.8-dev \
+        pipenv \
+        zsh \
+        fish \
+        cmake \
+        libpng-dev \
+        libgl1-mesa-dev \
+        libgl1-mesa-glx \
+        libglfw3 \
+        libglew2.1 \
+        libglew-dev \
+        libosmesa6 \
+        libosmesa6-dev \
+        xpra \
+        xserver-xorg-dev \
+        patchelf \
+        ffmpeg
+
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    # Setup Python3.8 and pip
+    ln -s /usr/bin/python3.8 /usr/local/bin/python
+    ln -s /usr/bin/python3.8 /usr/local/bin/python3
+    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.8
+
+    # Install some Python libraries
+    python3.8 -m pip --no-cache-dir install \
+        setuptools \
+        wheel \
+        cython \
+        black \
+        isort \
+        flake8 \
+        pytest \
+        numpy \
+        scipy \
+        pandas \
+        scikit-learn \
+        scikit-image \
+        Pillow \
+        opencv-python \
+        matplotlib \
+        seaborn \
+        jupyterlab \
+        jupyterlab_code_formatter \
+        colorama \
+        tensorboard \
+        tensorboardX \
+        gym[atari]
+
+    # Enable jupyter plugins
+    jupyter server extension enable jupyterlab_code_formatter
+
+    # Install gym and mujoco
+    ## For mujoco-py
+    export MUJOCO_PY_MUJOCO_PATH=/opt/mujoco/mujoco200
+    export LD_LIBRARY_PATH=$MUJOCO_PY_MUJOCO_PATH/bin:${LD_LIBRARY_PATH}
+    export MUJOCO_PY_MJKEY_PATH=/opt/mujoco/mjkey.txt
+
+    ## For DM control suites
+    export MJKEY_PATH=$MUJOCO_PY_MJKEY_PATH
+    export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
+
+    # Install pybullet
+    python3.8 -m pip install pybullet
+
+    # Install Jax and related libraries
+    pip install --no-cache-dir \
+        jaxlib==0.1.65+cuda112 \
+        -f \
+        https://storage.googleapis.com/jax-releases/jax_releases.html
+
+    pip install --no-cache-dir \
+        jax \
+        git+git://github.com/deepmind/dm-haiku \
+        git+git://github.com/deepmind/distrax.git \
+        git+git://github.com/deepmind/rlax.git \
+        git+git://github.com/deepmind/optax.git \
+        git+git://github.com/deepmind/chex.git \
+        git+git://github.com/deepmind/acme.git
+
+    # Install MuJoCo
+    # We have to install mujoco-py at last, to ensure numpy binary compatibility
+    wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip \
+        && unzip mujoco.zip \
+        && mv mujoco200_linux $MUJOCO_PY_MUJOCO_PATH \
+        && rm mujoco.zip
+
+    python3.8 -m pip --no-cache-dir install dm_control
+    python3.8 -m pip --no-cache-dir install git+git://github.com/denisyarats/dmc2gym.git
+    python3.8 -m pip --no-cache-dir install git+git://github.com/kngwyu/mujoco-py.git@use-tmp-for-lock
+
+    # Remove the MuJoCo key
+    rm $MUJOCO_PY_MJKEY_PATH
+
+%help
+    This is a container for DeepRL experiments.
+    Contains Python3.8, PyTorch 1.8.1, OpenAI gym with atari games,
+    Jupyter Lab, mujoco-py and dm_control with MuJoCo 2.0.
+    This container expects that your mujoco key is binded to /opt/mujoco/mjkey.txt,
+    by "--bind your-mjkey.txt:/opt/mujoco/mjkey.txt" or
+    "export SINGULARITY_BIND='your-mjkey.txt:/opt/mujoco/mjkey.txt'".
+
+%test
+    if [ -f $MUJOCO_PY_MJKEY_PATH ]; then
+        python -c "import mujoco_py"
+        if [ $? -ne 0 ]; then
+            echo "Failed to import mujoco_py"
+            exit 1
+        fi
+    else
+        echo "Test is skipped since the mujoco key is not binded"
+    fi
