@@ -1,5 +1,5 @@
-BootStrap: library
-From: ubuntu:20.04
+BootStrap: docker
+From: nvcr.io/nvidia/tensorflow:21.02-tf2-py3
 
 %labels
     Author yuji.kanagawa@oist.jp
@@ -47,8 +47,6 @@ From: ubuntu:20.04
         python3-venv \
         python3-distutils \
         python3-cffi \
-        python3.8 \
-        python3.8-dev \
         pipenv \
         zsh \
         fish \
@@ -68,57 +66,40 @@ From: ubuntu:20.04
 
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-    # Setup Python3.8 and pip
-    ln -s /usr/bin/python3.8 /usr/local/bin/python
-    ln -s /usr/bin/python3.8 /usr/local/bin/python3
-    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.8
+    # Make Python3 default
+    ln -s /usr/bin/python3 /usr/local/bin/python
 
     # Install some Python libraries
-    python3.8 -m pip --no-cache-dir install \
+    python3 -m pip install --upgrade pip
+    # Install some tools with --upgrade
+    python3 -m pip --no-cache-dir install --upgrade \
+        jupyterlab \
+        jupyterlab_code_formatter \
         setuptools \
         wheel \
         cython \
         black \
-        isort \
         flake8 \
         pytest \
-        numpy \
-        scipy \
+        isort \
+        pygame
+    # Enable jupyter plugins
+    jupyter server extension enable jupyterlab_code_formatter
+    # Do not use --upgrade this time not to update numpy
+    python3 -m pip --no-cache-dir install \
         pandas \
-        scikit-learn \
-        scikit-image \
         Pillow \
         opencv-python \
         matplotlib \
         seaborn \
-        jupyterlab \
-        jupyterlab_code_formatter \
         colorama \
-        tensorboard \
-        tensorboardX \
         gym[atari]
-
-    # Enable jupyter plugins
-    jupyter server extension enable jupyterlab_code_formatter
-
-    # Install gym and mujoco
-    ## For mujoco-py
-    export MUJOCO_PY_MUJOCO_PATH=/opt/mujoco/mujoco200
-    export LD_LIBRARY_PATH=$MUJOCO_PY_MUJOCO_PATH/bin:${LD_LIBRARY_PATH}
-    export MUJOCO_PY_MJKEY_PATH=/opt/mujoco/mjkey.txt
-
-    ## For DM control suites
-    export MJKEY_PATH=$MUJOCO_PY_MJKEY_PATH
-    export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
-
-    # Install pybullet
-    python3.8 -m pip install pybullet
-
     # Install Jax and related libraries
-    pip install --no-cache-dir \
-        jaxlib==0.1.65+cuda112 \
-        -f \
-        https://storage.googleapis.com/jax-releases/jax_releases.html
+    export CUDA_VERSION=11.1
+    pip install jaxlib && \
+        pip install --upgrade -f https://storage.googleapis.com/jax-releases/jax_releases.html \
+                    jaxlib==`python3 -c 'import jaxlib; print(jaxlib.__version__)'`+cuda`echo $CUDA_VERSION | sed s:\\\.::g` && \
+        pip install jax
 
     pip install --no-cache-dir \
         jax \
@@ -129,6 +110,19 @@ From: ubuntu:20.04
         git+git://github.com/deepmind/chex.git \
         git+git://github.com/deepmind/acme.git
 
+    # Install pybullet
+    python3 -m pip install pybullet
+
+    # Install mujoco environments
+    ## For mujoco-py
+    export MUJOCO_PY_MUJOCO_PATH=/opt/mujoco/mujoco200
+    export LD_LIBRARY_PATH=$MUJOCO_PY_MUJOCO_PATH/bin:${LD_LIBRARY_PATH}
+    export MUJOCO_PY_MJKEY_PATH=/opt/mujoco/mjkey.txt
+
+    ## For DM control suites
+    export MJKEY_PATH=$MUJOCO_PY_MJKEY_PATH
+    export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
+
     # Install MuJoCo
     # We have to install mujoco-py at last, to ensure numpy binary compatibility
     wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip \
@@ -136,16 +130,16 @@ From: ubuntu:20.04
         && mv mujoco200_linux $MUJOCO_PY_MUJOCO_PATH \
         && rm mujoco.zip
 
-    python3.8 -m pip --no-cache-dir install dm_control
-    python3.8 -m pip --no-cache-dir install git+git://github.com/denisyarats/dmc2gym.git
-    python3.8 -m pip --no-cache-dir install git+git://github.com/kngwyu/mujoco-py.git@use-tmp-for-lock
+    python3 -m pip --no-cache-dir install dm_control
+    python3 -m pip --no-cache-dir install git+git://github.com/denisyarats/dmc2gym.git
+    python3 -m pip --no-cache-dir install git+git://github.com/kngwyu/mujoco-py.git@use-tmp-for-lock
 
     # Remove the MuJoCo key
     rm $MUJOCO_PY_MJKEY_PATH
 
 %help
     This is a container for DeepRL experiments.
-    Contains Python3.8, PyTorch 1.8.1, OpenAI gym with atari games,
+    Contains Python3.8, Jax, OpenAI gym with atari games,
     Jupyter Lab, mujoco-py and dm_control with MuJoCo 2.0.
     This container expects that your mujoco key is binded to /opt/mujoco/mjkey.txt,
     by "--bind your-mjkey.txt:/opt/mujoco/mjkey.txt" or
