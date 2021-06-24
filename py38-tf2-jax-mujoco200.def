@@ -101,14 +101,12 @@ From: nvcr.io/nvidia/tensorflow:21.02-tf2-py3
                     jaxlib==`python3 -c 'import jaxlib; print(jaxlib.__version__)'`+cuda`echo $CUDA_VERSION | sed s:\\\.::g` && \
         pip install jax
 
-    pip install --no-cache-dir \
-        jax \
+    pip install \
         git+git://github.com/deepmind/dm-haiku \
         git+git://github.com/deepmind/distrax.git \
         git+git://github.com/deepmind/rlax.git \
         git+git://github.com/deepmind/optax.git \
-        git+git://github.com/deepmind/chex.git \
-        git+git://github.com/deepmind/acme.git
+        git+git://github.com/deepmind/chex.git
 
     # Install pybullet
     python3 -m pip install pybullet
@@ -144,14 +142,3 @@ From: nvcr.io/nvidia/tensorflow:21.02-tf2-py3
     This container expects that your mujoco key is binded to /opt/mujoco/mjkey.txt,
     by "--bind your-mjkey.txt:/opt/mujoco/mjkey.txt" or
     "export SINGULARITY_BIND='your-mjkey.txt:/opt/mujoco/mjkey.txt'".
-
-%test
-    if [ -f $MUJOCO_PY_MJKEY_PATH ]; then
-        python -c "import mujoco_py"
-        if [ $? -ne 0 ]; then
-            echo "Failed to import mujoco_py"
-            exit 1
-        fi
-    else
-        echo "Test is skipped since the mujoco key is not binded"
-    fi
