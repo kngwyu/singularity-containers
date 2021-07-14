@@ -1,5 +1,5 @@
 BootStrap: docker
-From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
+From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
 
 %labels
     Author yuji.kanagawa@oist.jp
@@ -23,6 +23,7 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
     export MJLIB_PATH=$MUJOCO_PY_MUJOCO_PATH/bin/libmujoco200.so
 
 %post
+    export DEBIAN_FRONTEND=noninteractive
     apt update && apt install -y software-properties-common
 
     add-apt-repository universe
