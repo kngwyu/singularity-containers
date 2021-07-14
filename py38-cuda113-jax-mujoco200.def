@@ -1,5 +1,5 @@
 BootStrap: docker
-From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
+From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
 
 %labels
     Author yuji.kanagawa@oist.jp
@@ -29,7 +29,7 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
     add-apt-repository universe
     add-apt-repository ppa:kelleyk/emacs
 
-    apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
+    apt update && apt install -y \
         build-essential \
         git \
         wget \
@@ -59,12 +59,15 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
         libglfw3 \
         libglew2.1 \
         libglew-dev \
+        libncursesw5 \
         libosmesa6 \
         libosmesa6-dev \
+        libtinfo5 \
         xpra \
         xserver-xorg-dev \
         patchelf \
-        ffmpeg
+        ffmpeg \
+        cuda-command-line-tools-11-3=11.3.1-1
 
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
