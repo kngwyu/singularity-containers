@@ -10,7 +10,11 @@ From: nvcr.io/nvidia/tensorflow:21.02-tf2-py3
     mjkey.txt /opt/mujoco/mjkey.txt
 
 %environment
-    export LC_ALL=C
+    export LANG=en_US.UTF-8
+    export LANGUAGE=en_US:en
+    export LC_ALL=en_US.UTF-8
+
+
     export SHELL=/bin/bash
 
     # For mujoco-py
@@ -65,6 +69,9 @@ From: nvcr.io/nvidia/tensorflow:21.02-tf2-py3
         ffmpeg
 
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    # Use utf-8!
+    locale-gen en_US.UTF-8
 
     # Make Python3 default
     ln -s /usr/bin/python3 /usr/local/bin/python

@@ -1,5 +1,5 @@
 BootStrap: docker
-From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
+From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
 
 %labels
     Author yuji.kanagawa@oist.jp
@@ -10,7 +10,9 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
     mjkey.txt /opt/mujoco/mjkey.txt
 
 %environment
-    export LC_ALL=C
+    export LANG=en_US.UTF-8
+    export LANGUAGE=en_US:en
+    export LC_ALL=en_US.UTF-8
     export SHELL=/bin/bash
 
     # For mujoco-py
@@ -71,6 +73,9 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
 
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+    # Make UTF-8 locale
+    locale-gen en_US.UTF-8
+
     # Make Python3 default
     ln -s /usr/bin/python3 /usr/local/bin/python
 
@@ -84,7 +89,8 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
         git+git://github.com/deepmind/rlax.git \
         git+git://github.com/deepmind/optax.git \
         git+git://github.com/deepmind/chex.git \
-        git+git://github.com/deepmind/acme.git
+        git+git://github.com/deepmind/acme.git \
+        git+https://github.com/google/flax.git
 
     # Install some tools with --upgrade
     python3 -m pip --no-cache-dir install \
@@ -106,6 +112,7 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
         seaborn \
         colorama \
         typer \
+        ray \
         gym[atari]
 
     # Enable jupyter plugins
