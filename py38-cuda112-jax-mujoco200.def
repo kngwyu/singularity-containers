@@ -69,7 +69,8 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
         xserver-xorg-dev \
         patchelf \
         ffmpeg \
-        cuda-command-line-tools-11-3=11.3.1-1
+        locales \
+        cuda-command-line-tools-11-2=11.2.0-1
 
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -104,6 +105,7 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
         flake8 \
         pytest \
         isort \
+        pyarrow \
         pygame \
         pandas \
         Pillow \
@@ -112,7 +114,7 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
         seaborn \
         colorama \
         typer \
-        ray \
+        ray[default] \
         gym[atari]
 
     # Enable jupyter plugins
