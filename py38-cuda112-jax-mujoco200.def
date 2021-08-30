@@ -51,6 +51,7 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
         python3-venv \
         python3-distutils \
         python3-cffi \
+        python3-opencv \
         pipenv \
         zsh \
         fish \
@@ -109,13 +110,13 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
         pygame \
         pandas \
         Pillow \
-        opencv-python \
         matplotlib \
         seaborn \
         colorama \
         typer \
+        snoop \
         ray[default] \
-        gym[atari]
+        gym[classic_control]
 
     # Enable jupyter plugins
     jupyter server extension enable jupyterlab_code_formatter
