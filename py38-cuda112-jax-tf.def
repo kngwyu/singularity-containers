@@ -69,6 +69,8 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-devel-ubuntu20.04
         git+git://github.com/deepmind/rlax.git \
         git+git://github.com/deepmind/optax.git \
         git+git://github.com/deepmind/chex.git \
+        git+git://github.com/deepmind/jaxline.git \
+        git+git://github.com/deepmind/einshape.git \
         git+git://github.com/deepmind/acme.git \
         git+git://github.com/google/flax.git
 
@@ -79,6 +81,7 @@ From: nvcr.io/nvidia/cuda:11.2.0-cudnn8-devel-ubuntu20.04
         scikit-learn \
         scikit-image \
         imageio \
+        tqdm \
         pyYAML \
         pygame \
         moviepy \
