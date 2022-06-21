@@ -5,10 +5,6 @@ From: ubuntu:20.04
     Author yuji.kanagawa@oist.jp
     Version v0.1.0
 
-%files
-    # Copy MuJoCo key
-    mjkey.txt /opt/mujoco/mjkey.txt
-
 %environment
     export LANG=en_US.UTF-8
     export LANGUAGE=en_US:en
