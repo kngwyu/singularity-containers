@@ -1,0 +1,126 @@
+BootStrap: docker
+From: nvcr.io/nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
+
+%labels
+Author yuji.kanagawa@oist.jp
+Version v0.1.0
+
+%environment
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+export SHELL=/bin/bash
+export NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+
+%files
+10_nvidia.json
+
+%post
+export DEBIAN_FRONTEND=noninteractive
+apt update && apt install -y software-properties-common
+
+add-apt-repository universe
+add-apt-repository ppa:kelleyk/emacs
+
+# Install some system packages
+# Note that python3-venv is necessary because Ubuntu's Python doesn't ship ensurepip
+apt update && apt install -y \
+        python3-pip \
+        python3-venv \
+        build-essential \
+        git \
+        wget \
+        vim \
+        emacs28 \
+        curl \
+        zip \
+        unzip \
+        pkg-config \
+        libblas-dev \
+        liblapack-dev \
+        zsh \
+        fish \
+        cmake \
+        ffmpeg \
+        imagemagick \
+        locales \
+        libtinfo5 \
+        libncursesw5 \
+        cuda-command-line-tools-11-6="11.6.2-1" \
+        nvidia-modprobe \
+        libglvnd0 \
+        libgl1 \
+        libglx0 \
+        libegl1 \
+        libgles2
+
+apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy 10_nvidia.json so that EGL works
+cp 10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json && rm 10_nvidia.json
+
+# Install ripgrep
+curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
+dpkg -i ripgrep_13.0.0_amd64.deb
+rm ripgrep_13.0.0_amd64.deb
+
+# Make UTF-8 locale
+locale-gen en_US.UTF-8
+
+# Make Python3 default
+ln -s /usr/bin/python3 /usr/local/bin/python
+
+# Upgrade pip, setuptools and wheel.
+# Having an old setuptools can cause problem: see https://github.com/pypa/setuptools/issues/3269
+python3 -m pip --no-cache-dir install --upgrade \
+    build \
+    pip \
+    setuptools \
+    wheel \
+
+# Install some jax libraries
+python3 -m pip --no-cache-dir install --upgrade \
+        chex \
+        dm-haiku \
+        distrax \
+        flax \
+        optax \
+        rlax
+
+# Install jax after some libraries, enforcing the latest one
+python3 -m pip --no-cache-dir install --upgrade \
+        jax[cuda11_cudnn82] \
+        -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+# Install some useful Python packages
+# black/isort: code formatting
+# flake8/pyright: lint
+# nox: task runner
+# jupyterlab and some extensions
+# matplotlib/seaborn: plotting
+# pandas/pyarrow: reading/writing log files
+python3 -m pip --no-cache-dir install --upgrade \
+        black \
+        isort \
+        flake8 \
+        flake8-bugbear \
+        pyright \
+        nox \
+        pytest \
+        jupyterlab \
+        ipywidgets \
+        jupyterlab_code_formatter \
+        jupyterlab-lsp \
+        matplotlib \
+        seaborn \
+        pandas \
+        pyarrow
+
+# Enable jupyter plugins
+jupyter server extension enable \
+        jupyterlab_code_formatter \
+        ipywidgets \
+        jupyterlab_lsp
+
+%help
+Cotainer with CUDA and Jax
