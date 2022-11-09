@@ -1,0 +1,48 @@
+BootStrap: docker
+From: alpine:3.16
+
+%labels
+Author yuji.kanagawa@oist.jp
+Version v0.1.0
+
+%environment
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+export SHELL=/bin/bash
+export TZ=Asia/Tokyo
+
+%post
+# Enable testing branch
+echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+# Install system packages
+apk add --update --no-cache \
+    bash \
+    black \
+    curl \
+    emacs-nox \
+    fish \
+    git \
+    hunspell \
+    musl \
+    musl-utils \
+    musl-locales \
+    tzdata \
+    openssh \
+    py3-flake8 \
+    py3-isort \
+    pyright \
+    python3 \
+    ripgrep \
+    shellcheck
+
+# Make locale
+echo 'export LC_ALL=en_US.UTF-8' >> /etc/profile.d/locale.sh && \
+  sed -i 's|LANG=C.UTF-8|LANG=en_US.UTF-8|' /etc/profile.d/locale.sh
+
+# Some python things
+ln -sf python3 /usr/bin/python
+python3 -m ensurepip
+
+%help
+A minimal emacs container
