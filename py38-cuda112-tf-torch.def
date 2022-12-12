@@ -1,0 +1,97 @@
+BootStrap: docker
+From: nvcr.io/nvidia/cuda:11.2.2-cudnn8-devel-ubuntu20.04
+
+%labels
+Author yuji.kanagawa@oist.jp
+Version v0.1.0
+
+%environment
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+export SHELL=/bin/bash
+export NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+
+%files
+10_nvidia.json
+
+%post
+export DEBIAN_FRONTEND=noninteractive
+apt update && apt install -y software-properties-common
+
+add-apt-repository universe
+
+# Install some packages required by deeplabcut
+apt update && apt install -y \
+        python3-pip \
+        python3-dev \
+        python3-venv \
+        ffmpeg \
+        imagemagick \
+        libsm6 \
+        libxext6 \
+        build-essential \
+        make \
+        cmake \
+        gcc \
+        g++ \
+        libgtk-3-dev \
+        python3-wxgtk4.0 \
+        locales
+
+apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Make UTF-8 locales
+# I don't know why dlc requires en_GB
+locale-gen en_US.UTF-8 en_GB.UTF-8
+
+# Copy 10_nvidia.json so that EGL works
+cp 10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json && rm 10_nvidia.json
+
+# Make Python3 default
+ln -s /usr/bin/python3 /usr/local/bin/python
+
+# Upgrade pip, setuptools and wheel.
+# Having an old setuptools can cause problem: see https://github.com/pypa/setuptools/issues/3269
+python3 -m pip --no-cache-dir install --upgrade \
+    build \
+    pip \
+    setuptools==64.0.3 \
+    wheel
+
+# Install tensorflow
+python3 -m pip --no-cache-dir install \
+    https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-2.10.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+
+# Install torch
+pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
+
+# Install some useful Python packages
+# black/isort: code formatting
+# flake8/pyright: lint
+# jupyterlab and some extensions
+# matplotlib/seaborn: plotting
+# pandas/pyarrow: reading/writing log files
+python3 -m pip --no-cache-dir install --upgrade \
+        black \
+        isort \
+        flake8 \
+        flake8-bugbear \
+        pyright \
+        jupyterlab \
+        ipywidgets \
+        jupyterlab_code_formatter \
+        jupyterlab-lsp \
+        matplotlib \
+        seaborn \
+        statsmodels \
+        pandas
+
+# Enable jupyter plugins
+jupyter server extension enable \
+        jupyterlab_code_formatter \
+        ipywidgets \
+        jupyterlab_lsp
+
+%help
+Cotainer with Tensorflow and deeplabcut
