@@ -105,6 +105,7 @@ python3 -m pip --no-cache-dir install --upgrade \
         nox \
         pytest \
         jupyterlab \
+        ipympl \
         ipywidgets \
         jupyterlab_code_formatter \
         jupyterlab-lsp \
