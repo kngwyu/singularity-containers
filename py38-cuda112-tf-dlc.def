@@ -14,6 +14,7 @@ export NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
 
 %files
 10_nvidia.json
+download_dlc_models.py
 
 %post
 export DEBIAN_FRONTEND=noninteractive
@@ -86,6 +87,9 @@ python3 -m pip --no-cache-dir install --upgrade \
         seaborn \
         statsmodels \
         pandas
+
+# Download all dlc models
+python3 download_dlc_models.py && rm download_dlc_models.py
 
 # Enable jupyter plugins
 jupyter server extension enable \
