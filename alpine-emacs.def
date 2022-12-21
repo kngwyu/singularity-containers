@@ -31,7 +31,7 @@ apk add --update --no-cache \
     openssh \
     py3-flake8 \
     py3-isort \
-    pyright \
+    py3-lsp-server \
     python3 \
     ripgrep \
     shellcheck
