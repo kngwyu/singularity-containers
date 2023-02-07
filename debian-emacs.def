@@ -1,0 +1,42 @@
+BootStrap: docker
+From: silex/emacs:28.2-ci
+
+%labels
+Author yuji.kanagawa@oist.jp
+Version v0.1.0
+
+%environment
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+export SHELL=/bin/bash
+export TZ=Asia/Tokyo
+
+%post
+export DEBIAN_FRONTEND=noninteractive
+apt update && apt install -y software-properties-common
+
+# Install some system packages
+# Jax needs cuda-compiler
+# Note that python3-venv is necessary because Ubuntu's Python doesn't ship ensurepip
+apt update && apt install -y \
+        black \
+        isort \
+        locales \
+        npm \
+        ripgrep \
+        shellcheck \
+        zstd
+
+apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Make UTF-8 locale
+locale-gen en_US.UTF-8
+
+# Install pyright and bash-language-server
+npm install -g pyright
+npm install -g bash-language-server
+npm cache clean --force
+
+%help
+A minimal emacs container

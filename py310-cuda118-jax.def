@@ -56,7 +56,9 @@ apt update && apt install -y \
         libegl1 \
         libgles2 \
         graphviz \
-        graphviz-dev
+        graphviz-dev \
+        nodejs \
+        npm
 
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -88,40 +90,21 @@ python3 -m pip --no-cache-dir install --upgrade \
 
 # Install jax after some libraries, enforcing the latest one
 python3 -m pip --no-cache-dir install --upgrade \
-        jax[cuda11_cudnn82] \
+        jax[cuda] \
         -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Install some useful Python packages
-# black/isort: code formatting
-# flake8/pyright: lint
 # nox: task runner
-# jupyterlab and some extensions
 # matplotlib/seaborn: plotting
 # pandas/pyarrow: reading/writing log files
 python3 -m pip --no-cache-dir install --upgrade \
-        black \
-        isort \
-        flake8 \
-        flake8-bugbear \
-        pyright \
         nox \
-        pytest \
-        jupyterlab \
-        ipympl \
-        ipywidgets \
-        jupyterlab_code_formatter \
-        jupyterlab-lsp \
         matplotlib \
         networkx \
         seaborn \
         pandas \
+        polars \
         pyarrow
-
-# Enable jupyter plugins
-jupyter server extension enable \
-        jupyterlab_code_formatter \
-        ipywidgets \
-        jupyterlab_lsp
 
 %help
 Cotainer with CUDA and Jax

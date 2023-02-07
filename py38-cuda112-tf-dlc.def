@@ -61,41 +61,26 @@ python3 -m pip --no-cache-dir install --upgrade \
     wheel
 
 # Install deep lab cut first
-python3 -m pip --no-cache-dir install --upgrade deeplabcut==2.2.3
+python3 -m pip --no-cache-dir install --upgrade deeplabcut[gui]
 
 # Then install tensorflow
 python3 -m pip --no-cache-dir install \
     https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-2.10.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
 # Install some useful Python packages
-# black/isort: code formatting
-# flake8/pyright: lint
-# jupyterlab and some extensions
+# nox: task runner
 # matplotlib/seaborn: plotting
 # pandas/pyarrow: reading/writing log files
 python3 -m pip --no-cache-dir install --upgrade \
-        black \
-        isort \
-        flake8 \
-        flake8-bugbear \
-        pyright \
-        jupyterlab \
-        ipywidgets \
-        jupyterlab_code_formatter \
-        jupyterlab-lsp \
+        nox \
         matplotlib \
+        networkx \
         seaborn \
-        statsmodels \
-        pandas
+        pandas \
+        pyarrow
 
 # Download all dlc models
 python3 download_dlc_models.py && rm download_dlc_models.py
-
-# Enable jupyter plugins
-jupyter server extension enable \
-        jupyterlab_code_formatter \
-        ipywidgets \
-        jupyterlab_lsp
 
 %help
 Cotainer with Tensorflow and deeplabcut
