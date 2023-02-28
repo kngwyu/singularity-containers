@@ -30,20 +30,14 @@ apt update && apt install -y \
         build-essential \
         git \
         wget \
-        vim \
-        emacs \
         curl \
         zip \
         unzip \
         pkg-config \
         libblas-dev \
         liblapack-dev \
-        zsh \
-        fish \
-        cmake \
         ffmpeg \
         imagemagick \
-        ripgrep \
         locales \
         libtinfo5 \
         libncursesw5 \
@@ -102,9 +96,10 @@ python3 -m pip --no-cache-dir install --upgrade \
         matplotlib \
         networkx \
         seaborn \
-        pandas \
         polars \
         pyarrow
+
+python3 -m pip --no-cache-dir install --pre pandas==2.0.0rc0
 
 %help
 Cotainer with CUDA and Jax
