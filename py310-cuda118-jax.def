@@ -96,11 +96,12 @@ python3 -m pip --no-cache-dir install --upgrade \
         matplotlib \
         networkx \
         seaborn \
+        pandas==2.0 \
         polars \
         pyarrow \
-        PySide6
+        PySide6==6.5.0
 
-python3 -m pip --no-cache-dir install --pre pandas==2.0.0rc0
+strip --remove-section=.note.ABI-tag /usr/local/lib/python3.10/dist-packages/PySide6/Qt/lib/libQt6Core.so.6
 
 %help
 Cotainer with CUDA and Jax
