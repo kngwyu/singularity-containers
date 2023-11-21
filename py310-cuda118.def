@@ -75,18 +75,17 @@ python3 -m pip --no-cache-dir install --upgrade \
     setuptools \
     wheel
 
-# Install some jax libraries
+# Upgrade pip, setuptools and wheel.
+# Having an old setuptools can cause problem: see https://github.com/pypa/setuptools/issues/3269
 python3 -m pip --no-cache-dir install --upgrade \
-        chex \
-        dm-haiku \
-        distrax \
-        flax \
-        optax \
-        rlax
+    build \
+    pip \
+    setuptools \
+    wheel
 
 # Install jax after some libraries, enforcing the latest one
 python3 -m pip --no-cache-dir install --upgrade \
-        jax[cuda] \
+        jax[cuda11_local] \
         -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Install some useful Python packages
@@ -98,12 +97,10 @@ python3 -m pip --no-cache-dir install --upgrade \
         matplotlib \
         networkx \
         seaborn \
-        pandas==2.0 \
+        pandas \
         polars \
         pyarrow \
-        PySide6==6.5.0
-
-strip --remove-section=.note.ABI-tag /usr/local/lib/python3.10/dist-packages/PySide6/Qt/lib/libQt6Core.so.6
+        PySide6
 
 %help
 Cotainer with CUDA and Jax
