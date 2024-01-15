@@ -85,7 +85,7 @@ python3 -m pip --no-cache-dir install --upgrade \
 
 # Install jax after some libraries, enforcing the latest one
 python3 -m pip --no-cache-dir install --upgrade \
-        jax[cuda11_local] \
+        jax[cuda11_pip] \
         -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Install some useful Python packages
