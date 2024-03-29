@@ -1,5 +1,5 @@
 BootStrap: docker
-From: nvcr.io/nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
+From: nvcr.io/nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
 
 %labels
 Author yuji.kanagawa@oist.jp
@@ -78,7 +78,7 @@ python3 -m pip --no-cache-dir install --upgrade \
 
 # Install jax after some libraries, enforcing the latest one
 python3 -m pip --no-cache-dir install --upgrade \
-        "jax[cuda12_local]" \
+        jax[cuda12_pip] \
         -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Install some useful Python packages
@@ -93,6 +93,9 @@ python3 -m pip --no-cache-dir install --upgrade \
         pandas \
         polars \
         pyarrow \
+        seaborn \
+        jupyterlab \
+        jupyterlab_code_formatter \
         PySide6
 
 %help
