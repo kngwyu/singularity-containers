@@ -20,39 +20,11 @@ You can also use [apptainer](https://apptainer.org/)[^1] instead of singularity.
   - CUDA CLI tools
   - jax
 
-- py38-cuda116-jax.def
-  - Ubuntu 20.04, Cuda 11.6, CUDNN8.2
-  - CUDA CLI tools
-  - jax
-
-- py38-cuda114-jax-brax.def
-  - Ubuntu 20.04, Cuda 11.4, CUDNN8.2
-  - jax
-  - brax
-
-- py38-cuda112-jax-tf.def
-  - Ubuntu 20.04, Cuda 11.2, CUDNN8.1
-  - jax
-  - tensorflow
-
-- py38-cuda112-tf-dlc.def
-  - Ubuntu 20.04, Cuda 11.2, CUDNN8.1
-  - tensorflow and [deeplabcut](https://deeplabcut.github.io/DeepLabCut/)
-
-- py38-cuda114-jax-brax.def
-  - Ubuntu 20.04, Cuda 11.4, CUDNN8.2
-  - jax
-  - brax
-
 - py38-simple.def
   - Based on Ubuntu 20.04
   - Contains some basic Python scientific stacks
 
-- alpine-emacs.def
-  - Based on Alpine Linux
-  - Emacs and other utilities
-
-- alpine-emacs.def
+- debian-emacs.def
   - Based on [silex/emacs](https://hub.docker.com/r/silex/emacs)
   - Emacs and other utilities
 

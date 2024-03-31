@@ -1,0 +1,47 @@
+BootStrap: docker
+From: ghcr.io/nvidia/jax:equinox-2024-03-30
+
+%labels
+Author yuji.kanagawa@oist.jp
+Version v0.1.0
+
+%environment
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+export SHELL=/bin/bash
+export NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+%post
+export DEBIAN_FRONTEND=noninteractive
+apt update && apt install -y software-properties-common
+apt update && apt install -y \
+    python3-pip \
+    python3-venv \
+    build-essential \
+    locales
+
+apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Make UTF-8 locale
+locale-gen en_US.UTF-8
+
+# Alias to Python3
+ln -s /usr/bin/python3 /usr/local/bin/python
+
+# Upgrade pip, setuptools and wheel.
+# Having an old setuptools can cause problem: see https://github.com/pypa/setuptools/issues/3269
+python3 -m pip --no-cache-dir install --upgrade \
+    build \
+    pip \
+    setuptools \
+    wheel
+
+# Install some useful Python packages
+python3 -m pip --no-cache-dir install --upgrade \
+        polars \
+        seaborn \
+        jupyterlab
+
+%help
+Cotainer based on NVIDIA's JAX-Toolbox

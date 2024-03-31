@@ -1,5 +1,5 @@
 BootStrap: docker
-From: nvcr.io/nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
+From: nvcr.io/nvidia/cuda:12.3.2-runtime-ubuntu22.04
 
 %labels
 Author yuji.kanagawa@oist.jp
@@ -41,9 +41,9 @@ apt update && apt install -y \
         locales \
         libtinfo5 \
         libncursesw5 \
-        cuda-command-line-tools-12-2="12.2.2-1" \
-        cuda-compiler-12-2="12.2.2-1" \
-        cuda-tools-12-2="12.2.2-1" \
+        cuda-command-line-tools-12-3="12.3.2-1" \
+        cuda-compiler-12-3="12.3.2-1" \
+        cuda-tools-12-3="12.3.2-1" \
         nvidia-modprobe \
         libglvnd0 \
         libgl1 \
