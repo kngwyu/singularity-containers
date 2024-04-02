@@ -17,11 +17,9 @@ export DEBIAN_FRONTEND=noninteractive
 apt update && apt install -y software-properties-common
 
 # Install some system packages
-# Jax needs cuda-compiler
 # Note that python3-venv is necessary because Ubuntu's Python doesn't ship ensurepip
 apt update && apt install -y \
-        black \
-        isort \
+        python3-full \
         locales \
         npm \
         ripgrep \
@@ -37,6 +35,9 @@ locale-gen en_US.UTF-8
 npm install -g pyright
 npm install -g bash-language-server
 npm cache clean --force
+
+# Alias to Python3
+ln -s /usr/bin/python3 /usr/local/bin/python
 
 %help
 A minimal emacs container
